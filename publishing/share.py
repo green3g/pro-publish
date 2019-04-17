@@ -94,7 +94,7 @@ token = get_token(ags_url, ags_username, ags_password)
 
 # ## Share the items!
 
-# In[5]:
+# In[19]:
 
 
 def share_unshared_items():
@@ -114,7 +114,7 @@ def share_unshared_items():
             internal_url = f'{ags_url}/rest/services/{path}/{type}'
             service_url = f'{external_url}/rest/services/{path}/{type}'
             
-            items = gis.content.search(service_url)
+            items = gis.content.search(f'{service_url} owner:{username}')
             if len(items):
                 print(f'Item {service_url} is already shared.')
                 continue

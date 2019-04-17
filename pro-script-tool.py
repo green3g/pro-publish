@@ -9,30 +9,28 @@ def parse_bool(bool_val):
         return True
     return False
 
-# _script_.py
-# 'city_mn_lonsdale_webmap',
-# '\\\\gis.wsbeng.com\\maps\\DataFI\\City\\MN\\Lonsdale\\Datalink Dynamic\\groemhildt@maps.wsbeng.com_6443.ags',
-# 'city_mn_lonsdale_webmap',
-# 'Datafi',
-# 'false',
+# 'D:\\tools\\pro-publishing\\pro-script-tool.py',
+# 'inspections_survey',
+# 'C:\\Users\\groemhildt\\Documents\\ArcGIS\\Projects\\Pipeline2019Migration\\groemhildt@services.wsbeng.com_6443.ags',
+# 'inspections_survey',
+# 'wsb',
+# 'true',
 # 'Map,Query,Data',
 # 'false',
-# 'true',
-# '0',
-# '#'
+# 'true'
 if __name__ == '__main__':
     arcpy.AddMessage(argv)
     map_name, server, service_name, \
         folder, feature_access, \
         feature_capabilities, schema_locks, \
-        overwrite, instance_count = argv[1:10]
+        overwrite = argv[1:]
 
     # convert args
     feature_access = parse_bool(feature_access)
     schema_locks = parse_bool(schema_locks)
     overwrite = parse_bool(overwrite)
     
-    instance_count = int(instance_count)
+    instance_count = 1
     
     
     publish(

@@ -24,9 +24,9 @@ def disable_locking(doc):
 def set_instance_count(doc, instance_count):
     keyTags = doc.getElementsByTagName('Key')
     for keyTag in keyTags:
-        if keyTag.firstChild.data == 'MinInstances'
-            or keyTag.firstChild.data == 'MaxInstances'
-            or keyTag.firstChild.data == 'InstancesPerContainer':
+        if keyTag.firstChild.data == 'MinInstances' or \
+            keyTag.firstChild.data == 'MaxInstances' or \
+            keyTag.firstChild.data == 'InstancesPerContainer':
             keyTag.nextSibling.firstChild.data = instance_count
 
 """
@@ -179,6 +179,7 @@ def publish(map_name,
     StageService_server(sddraft_output_filename, sd_output_filename)
 
     # share to server
+    AddMessage('Uploading to server...')
     UploadServiceDefinition_server(sd_output_filename, server)
     AddMessage(f'Successfully published service {service_name} to {server}')
 

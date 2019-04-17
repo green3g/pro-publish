@@ -1,31 +1,37 @@
-import arcpy
+from arcpy import env, AddMessage, StageService_server, UploadServiceDefinition_server
+from arcpy.sharing import CreateSharingDraft
+from arcpy.mp import ArcGISProject
 from os.path import join
 from xml.dom.minidom import parse, parseString
 
-output = 'C:/tmp'
-default_server = 'C:/ArcGISConnections/groemhildt@dev.gis.wsbeng.com.ags'
-server_url = 'https://dev.gis.wsbeng.com/arcgis/'
-
-arcpy.env.overwriteOutput = True
-
-def write_xml(sddraft_path, doc):
-    f = open(sddraft_path, 'w')
-    doc.writexml(f)
-    f.close()
-
-def read_xml(sddraft_path):
-    # Read the contents of the original SDDraft into an xml parser
-    doc = parse(sddraft_path)
-    return doc
-
+env.overwriteOutput = True
+output = env.scratchFolder
+"""
+    search for and replace the schema locking key
+"""
 def disable_locking(doc):
-    # search for and replace the schema locking key
     keyTags = doc.getElementsByTagName('Key')
     for keyTag in keyTags:
             if keyTag.firstChild.data == 'schemaLockingEnabled':
                     keyTag.nextSibling.firstChild.data = 'false'
-	
-	
+
+"""
+    Set an instance count for min and max instances.
+    We set them both the same so that end users never
+    have to wait for spin ups.
+
+"""
+def set_instance_count(doc, instance_count):
+    keyTags = doc.getElementsByTagName('Key')
+    for keyTag in keyTags:
+        if keyTag.firstChild.data == 'MinInstances'
+            or keyTag.firstChild.data == 'MaxInstances'
+            or keyTag.firstChild.data == 'InstancesPerContainer':
+            keyTag.nextSibling.firstChild.data = instance_count
+
+"""
+    find and replace the overwrite part of the sddraft xml document
+"""
 def enable_overwrite(doc):
     stateTags = doc.getElementsByTagName('State')
     for stateTag in stateTags:
@@ -38,6 +44,12 @@ def enable_overwrite(doc):
                     typeTag.firstChild.data = 'esriServiceDefinitionType_Replacement'
     
 
+
+"""
+ find and replace the feature access section in an sddraft xml document
+ and enable feature access capabilities
+ 
+"""
 def enable_feature_access(doc, capabilities):
 
     # The follow code piece modifies the SDDraft from a new MapService with caching capabilities
@@ -72,6 +84,18 @@ def enable_feature_access(doc, capabilities):
                 if keyValue.firstChild.data == "WebCapabilities":
                     keyValue.nextSibling.firstChild.data = capabilities
 
+
+def write_draft(sddraft_path, doc):
+    f = open(sddraft_path, 'w')
+    doc.writexml(f)
+    f.close()
+
+def read_draft(sddraft_path):
+    # Read the contents of the original SDDraft into an xml parser
+    doc = parse(sddraft_path)
+    return doc
+
+
 """
 Publish a arcgis pro service
     service_name - The name of the service
@@ -84,27 +108,28 @@ Publish a arcgis pro service
     feature_access - Set True to enable feature access
     feature_capabilities - Capabilities (comma separated string) to enable
     schema_locks - True of False to toggle schema locks
-	overwrite - whether we should overwrite an existing service (service must exist)
+    overwrite - whether we should overwrite an existing service (service must exist)
 """
 def publish(map_name,
+            server,
             service_name = None, 
-            project='CURRENT',
-            server_type='STANDALONE_SERVER',
-            service_type='MAP_SERVICE',
-            server=default_server,
             folder = None,
+            schema_locks = False,
+	    overwrite = False,
             feature_access = False,
             feature_capabilities = 'Map,Query,Data',
-            schema_locks = False,
-			overwrite = False):
-    
+            instance_count = 1,
+            project='CURRENT',
+            server_type='STANDALONE_SERVER',
+            service_type='MAP_SERVICE'):
+
     if not service_name:
         service_name = map_name
     
     # get the map
     sddraft_filename = f'{service_name}.sddraft'
     sddraft_output_filename = join(output, sddraft_filename)
-    pro = arcpy.mp.ArcGISProject(project)
+    pro = ArcGISProject(project)
     mp = pro.listMaps(map_name)
     
     if not len(mp):
@@ -113,21 +138,26 @@ def publish(map_name,
     mp = mp[0]
 
     # create service draft and export to draft file
-    arcpy.AddMessage('Creating service draft...')
-    service_draft = arcpy.sharing.CreateSharingDraft(
+    AddMessage('Creating service draft...')
+    service_draft = CreateSharingDraft(
         server_type,
         service_type,
         service_name,
         mp)
     service_draft.targetServer = server
+
     # set folder if necessary
     if folder:
         service_draft.serverFolder = folder
         
     service_draft.exportToSDDraft(sddraft_output_filename)
 
+    # xml schema modifications
     # open the xml for potential modifications
-    doc = read_xml(sddraft_output_filename)
+    doc = read_draft(sddraft_output_filename)
+
+    # set instance count
+    set_instance_count(doc, instance_count)
 
     # enable feature service?
     if feature_access:
@@ -140,14 +170,15 @@ def publish(map_name,
             enable_overwrite(doc)
 
     # save the modified xml
-    write_xml(sddraft_output_filename, doc)
+    write_draft(sddraft_output_filename, doc)
 
     # stage service
-    arcpy.AddMessage('Staging service...')
+    AddMessage('Staging service...')
     sd_filename = f"{service_name}.sd"
     sd_output_filename = join(output, sd_filename)
-    arcpy.StageService_server(sddraft_output_filename, sd_output_filename)
+    StageService_server(sddraft_output_filename, sd_output_filename)
 
     # share to server
-    arcpy.UploadServiceDefinition_server(sd_output_filename, server)
-    arcpy.AddMessage(f'Successfully published service {service_name} to {server}')
+    UploadServiceDefinition_server(sd_output_filename, server)
+    AddMessage(f'Successfully published service {service_name} to {server}')
+

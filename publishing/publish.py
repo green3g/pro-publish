@@ -24,9 +24,14 @@ def disable_locking(doc):
 def set_instance_count(doc, instance_count):
     keyTags = doc.getElementsByTagName('Key')
     for keyTag in keyTags:
+	
+        # if instance count is 0 set up shared instances 
+        if instance_count == 0:
+                if keyTag.firstChild.data == 'provider':
+                        keyTag.nextSiblign.firstChild.data = 'DMaps'
+                        
         if keyTag.firstChild.data == 'MinInstances' or \
-            keyTag.firstChild.data == 'MaxInstances' or \
-            keyTag.firstChild.data == 'InstancesPerContainer':
+            keyTag.firstChild.data == 'MaxInstances':
             keyTag.nextSibling.firstChild.data = instance_count
 
 """

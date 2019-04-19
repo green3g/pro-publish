@@ -8,8 +8,10 @@ import arcpy
 
 if __name__ == '__main__':
     arcpy.AddMessage(argv)
-    map_name, server, service_name, folder, feature_access, \
-          feature_capabilities, schema_locks, overwrite, instance_count = argv[1:]
+    map_name, server, service_name, \
+        folder, feature_access, \
+        feature_capabilities, schema_locks, \
+        overwrite, instance_count = argv[1:8]
     
     publish(
         map_name,
@@ -22,3 +24,40 @@ if __name__ == '__main__':
         feature_capabilities,
         instance_count)
 
+# NOT USED -> 
+# copy of tool validation just in case something wonky happens in pro tools
+class ToolValidator(object):
+    """Class for validating a tool's parameter values and controlling
+    the behavior of the tool's dialog."""
+
+    def __init__(self):
+        """Setup arcpy and the list of tool parameters.""" 
+        self.params = arcpy.GetParameterInfo()
+
+    def initializeParameters(self): 
+        """Refine the properties of a tool's parameters. This method is 
+        called when the tool is opened."""
+
+    def updateParameters(self):
+        """Modify the values and properties of parameters before internal
+        validation is performed. This method is called whenever a parameter
+        has been changed."""
+        
+        # set service name if map name exists and not service name
+        if not self.params[0].altered:
+            self.params[2].value = str(self.params[0].value)
+                
+        # disable feature access if feature access not selected
+        self.params[5].enabled = self.params[4].value
+        
+        if not self.params[9].value:
+            self.params[8].value = 0
+            self.params[8].enabled = False
+        else:
+            if not self.params[8].value:
+                self.params[8].value = 1
+            self.params[8].enabled = True
+
+    def updateMessages(self):
+        """Modify the messages created by internal validation for each tool
+        parameter. This method is called after internal validation."""

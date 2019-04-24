@@ -1,17 +1,37 @@
 from publishing.publish import publish
 from sys import argv
 import arcpy
-#from argparse import ArgumentParser
-#
-#parser = ArgumentParser(description = 'Publish an arcgis pro map to a arcgis server')
 
+def parse_bool(bool_val):
+    if bool_val == 'true':
+        return True
+    return False
 
+# _script_.py
+# 'city_mn_lonsdale_webmap',
+# '\\\\gis.wsbeng.com\\maps\\DataFI\\City\\MN\\Lonsdale\\Datalink Dynamic\\groemhildt@maps.wsbeng.com_6443.ags',
+# 'city_mn_lonsdale_webmap',
+# 'Datafi',
+# 'false',
+# 'Map,Query,Data',
+# 'false',
+# 'true',
+# '0',
+# '#'
 if __name__ == '__main__':
     arcpy.AddMessage(argv)
     map_name, server, service_name, \
         folder, feature_access, \
         feature_capabilities, schema_locks, \
-        overwrite, instance_count = argv[1:8]
+        overwrite, instance_count = argv[1:10]
+
+    # convert args
+    feature_access = parse_bool(feature_access)
+    schema_locks = parse_bool(schema_locks)
+    overwrite = parse_bool(overwrite)
+    
+    instance_count = int(instance_count)
+    
     
     publish(
         map_name,

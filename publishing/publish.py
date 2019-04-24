@@ -1,4 +1,4 @@
-from arcpy import env, AddMessage, StageService_server, UploadServiceDefinition_server
+from arcpy import env, AddMessage, AddError, StageService_server, UploadServiceDefinition_server
 from arcpy.sharing import CreateSharingDraft
 from arcpy.mp import ArcGISProject
 from os.path import join
@@ -28,7 +28,7 @@ def set_instance_count(doc, instance_count):
         # if instance count is 0 set up shared instances 
         if instance_count == 0:
                 if keyTag.firstChild.data == 'provider':
-                        keyTag.nextSiblign.firstChild.data = 'DMaps'
+                        keyTag.nextSibling.firstChild.data = 'DMaps'
                         
         if keyTag.firstChild.data == 'MinInstances' or \
             keyTag.firstChild.data == 'MaxInstances':
@@ -138,7 +138,7 @@ def publish(map_name,
     mp = pro.listMaps(map_name)
     
     if not len(mp):
-        arcpy.AddError(f'could not locate map {map_name} in project {project}')
+        AddError(f'could not locate map {map_name} in project {project}')
         return
     mp = mp[0]
 

@@ -1,4 +1,6 @@
 from publishing.publish import publish
+from publishing.share import share_unshared_items
+
 from sys import argv
 import arcpy
 
@@ -43,6 +45,8 @@ if __name__ == '__main__':
         feature_access,
         feature_capabilities,
         instance_count)
+
+    share_unshared_items()
 
 # NOT USED -> 
 # copy of tool validation just in case something wonky happens in pro tools

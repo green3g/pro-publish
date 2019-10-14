@@ -4,6 +4,14 @@ from publishing.share import share_unshared_items
 from sys import argv
 import arcpy
 
+import sys
+_stdout = sys.stdout
+
+class ArcPyStream(object):
+    def write(self, s):
+        print(str(s))
+sys.stdout = ArcPyStream()
+
 def parse_bool(bool_val):
     if bool_val == 'true':
         return True
@@ -19,18 +27,18 @@ def parse_bool(bool_val):
 # 'false',
 # 'true'
 if __name__ == '__main__':
-    arcpy.AddMessage(argv)
+    
     map_name, server, service_name, \
         folder, feature_access, \
         feature_capabilities, schema_locks, \
-        overwrite = argv[1:]
+        overwrite, instance_count = argv[1:]
 
     # convert args
     feature_access = parse_bool(feature_access)
     schema_locks = parse_bool(schema_locks)
     overwrite = parse_bool(overwrite)
     
-    instance_count = 1
+    instance_count = int(instance_count)
     
     
     publish(
@@ -44,7 +52,14 @@ if __name__ == '__main__':
         feature_capabilities,
         instance_count)
 
-    share_unshared_items()
+    print('Publishing Completed!')
+    print('Tool is now sharing newly published items to ArcGIS Online')
+	
+    try:
+        share_unshared_items()
+    except Exception as e:
+        arcpy.AddWarning('An error occurred while sharing items.')
+        arcpy.AddWarning(e)
 
 # NOT USED -> 
 # copy of tool validation just in case something wonky happens in pro tools

@@ -67,6 +67,10 @@ def get_folders(url, token):
         'f': 'json',
         'token': token,
     }, verify=False).json()
+    if not 'folders' in json:
+        print('Warning! "folders" was not found in json response.')
+        print(json)
+        return []
     return json['folders']
 
 def get_services(url, token, folder=''):
@@ -139,6 +143,11 @@ def share_unshared_items():
 
             tags = layer_list + [type, path, external_url.replace('https://', '')]
 
+            # only use first 120 tags to avoid
+            # ago issues with too many tags
+            if len(tags) > 120:
+                tags = tags[0:120]
+                
             # create the item and share it
             item = {
                 'url': service_url,

@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
 
     # debug 
-    ags_url = 'https://services.wsbeng.com:6443/arcgis'
+    # ags_url = 'https://services.wsbeng.com:6443/arcgis'
 
     
     # ## Get a token

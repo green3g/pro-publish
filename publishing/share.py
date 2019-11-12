@@ -151,12 +151,9 @@ if __name__ == '__main__':
     ags_username = environ.get('AGS_USERNAME')
     ags_password = environ.get('AGS_PASSWORD')
     ags_url = environ.get('AGS_URL')
-    gis = GIS('https://wsbeng.maps.arcgis.com/', username, password)
+    ago_url = environ.get('AGO_URL')
 
-
-    # debug 
-    # ags_url = 'https://services.wsbeng.com:6443/arcgis'
-
+    gis = GIS(ago_url, username, password)
     
     # ## Get a token
 

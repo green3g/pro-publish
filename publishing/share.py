@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # In[1]:
@@ -7,6 +6,9 @@
 from arcgis import GIS
 from os import environ
 import requests
+
+# get env
+from environs import Env
 
 
 
@@ -143,15 +145,16 @@ if __name__ == '__main__':
     
     # ## Set up env and connect to gis
 
-    # In[2]:
+    env = Env()
+    env.read_env()
 
 
-    username = environ.get('AGO_USERNAME')
-    password = environ.get('AGO_PASSWORD')
-    ags_username = environ.get('AGS_USERNAME')
-    ags_password = environ.get('AGS_PASSWORD')
-    ags_url = environ.get('AGS_URL')
-    ago_url = environ.get('AGO_URL')
+    username = env.str('AGO_USERNAME')
+    password = env.str('AGO_PASSWORD')
+    ags_username = env.str('AGS_USERNAME')
+    ags_password = env.str('AGS_PASSWORD')
+    ags_url = env.str('AGS_URL')
+    ago_url = env.str('AGO_URL')
 
     gis = GIS(ago_url, username, password)
     

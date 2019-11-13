@@ -156,6 +156,8 @@ if __name__ == '__main__':
     ags_url = env.str('AGS_URL')
     ago_url = env.str('AGO_URL')
 
+    print(env)
+
     gis = GIS(ago_url, username, password)
     
     # ## Get a token

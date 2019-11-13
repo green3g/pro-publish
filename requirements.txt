@@ -1,3 +1,4 @@
 pywin32==225
 arcgis==1.7.0
 requests==2.22.0
+environs==6.1.0

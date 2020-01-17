@@ -82,7 +82,7 @@ def get_info(url, token):
 # In[19]:
 
 
-def share_unshared_items(gis, url, token):
+def share_unshared_items(gis, url, token, prefix=None):
     external_url = url.replace(':6443', '')
     folders = get_folders(url, token)
 
@@ -132,7 +132,7 @@ def share_unshared_items(gis, url, token):
             # create the item and share it
             item = {
                 'url': service_url,
-                'title': f'{path} ({type})',
+                'title': f'{prefix} {path} ({type})',
                 'description': description,
                 'snippet': summary,
                 'tags': ','.join(tags),
@@ -155,6 +155,7 @@ if __name__ == '__main__':
     ags_password = env.str('AGS_PASSWORD')
     ags_url = env.str('AGS_URL')
     ago_url = env.str('AGO_URL')
+    prefix = env.str('SERVER_PREFIX')
 
     print(env)
 
@@ -167,6 +168,6 @@ if __name__ == '__main__':
 
     token = get_token(ags_url, ags_username, ags_password)
 
-    share_unshared_items(gis, ags_url, token)
+    share_unshared_items(gis, ags_url, token, prefix)
     
 

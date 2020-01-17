@@ -132,7 +132,7 @@ def share_unshared_items(gis, url, token, prefix=None):
             # create the item and share it
             item = {
                 'url': service_url,
-                'title': f'{prefix} {path} ({type})',
+                'title': f'{prefix}_{path}_{type}',
                 'description': description,
                 'snippet': summary,
                 'tags': ','.join(tags),

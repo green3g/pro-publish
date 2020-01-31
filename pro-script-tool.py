@@ -1,5 +1,5 @@
-from publishing.publish import publish
-from publishing.share import share_unshared_items
+from arcgis_pro_publish.publish import publish
+from arcgis_pro_publish.share import share_unshared_items
 
 from sys import argv
 import arcpy

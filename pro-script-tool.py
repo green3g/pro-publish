@@ -41,7 +41,7 @@ if __name__ == '__main__':
         feature_access,
         feature_capabilities,
         instance_count)
-	arcpy.AddMessage('Publishing Successful!')
+    arcpy.AddMessage('Publishing Successful!')
 
 
 # NOT USED -> 

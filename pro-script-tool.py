@@ -1,5 +1,5 @@
 from arcgis_pro_publish.publish import publish
-from arcgis_pro_publish.share import share_unshared_items
+# from arcgis_pro_publish.share import share_unshared_items
 
 from sys import argv
 import arcpy
@@ -52,15 +52,7 @@ if __name__ == '__main__':
         feature_capabilities,
         instance_count)
 
-    print('Publishing Completed!')
-    print('Tool is now sharing newly published items to ArcGIS Online')
-	
-    try:
-        share_unshared_items()
-    except Exception as e:
-        arcpy.AddWarning('An error occurred while sharing items.')
-        arcpy.AddWarning(e)
-
+    arcpy.AddMessage('Publishing Completed!')
 # NOT USED -> 
 # copy of tool validation just in case something wonky happens in pro tools
 class ToolValidator(object):

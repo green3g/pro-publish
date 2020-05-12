@@ -144,7 +144,10 @@ def publish(map_name,
     # get the map
     sddraft_filename = f'{service_name}.sddraft'
     sddraft_output_filename = join(output, sddraft_filename)
-    pro = ArcGISProject(project)
+    if type(project) == str:
+        pro = ArcGISProject(project)
+    else:
+        pro = project
     mp = pro.listMaps(map_name)
 
     if not len(mp):

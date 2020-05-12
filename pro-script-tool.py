@@ -17,15 +17,6 @@ def parse_bool(bool_val):
         return True
     return False
 
-# 'D:\\tools\\pro-publishing\\pro-script-tool.py',
-# 'inspections_survey',
-# 'C:\\Users\\groemhildt\\Documents\\ArcGIS\\Projects\\Pipeline2019Migration\\groemhildt@services.wsbeng.com_6443.ags',
-# 'inspections_survey',
-# 'wsb',
-# 'true',
-# 'Map,Query,Data',
-# 'false',
-# 'true'
 if __name__ == '__main__':
     
     map_name, server, service_name, \
@@ -51,8 +42,8 @@ if __name__ == '__main__':
         feature_access,
         feature_capabilities,
         instance_count)
+    arcpy.AddMessage('Publishing Successful!')
 
-    arcpy.AddMessage('Publishing Completed!')
 # NOT USED -> 
 # copy of tool validation just in case something wonky happens in pro tools
 class ToolValidator(object):
